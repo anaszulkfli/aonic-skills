@@ -5,7 +5,7 @@
 - Added four portable Plane workflow skills and Codex `agents/openai.yaml` metadata.
 - Added invariant tests for mutation confirmation and read-only search behavior.
 - Each mutation workflow verifies configuration, resolves ambiguity explicitly, presents its payload or transition, requires confirmation immediately before one mutation, and uses the package CLI.
-- Corrected the subticket workflow to use the only child type supported by the declared CLI: the exact `User Story` type returned by `plane types`. The payload now labels this default explicitly instead of asking the agent to resolve arbitrary child types.
+- Corrected the subticket workflow so `User Story` is validated only for the parent. The child proposal states `type: Plane default` and omits `--type-id`, unless the caller already supplies a concrete type UUID, which is passed through without type-name resolution.
 
 ## Verification
 
