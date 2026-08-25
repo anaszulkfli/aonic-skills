@@ -14,3 +14,9 @@ test.each(['plane-create-subticket', 'plane-create-user-story', 'plane-update-st
 );
 
 test('search is read-only', () => expect(readSkill('plane-search-tickets')).toMatch(/never changes Plane data/i));
+
+test('subticket uses the CLI-supported User Story child type', () => {
+  const skill = readSkill('plane-create-subticket');
+  expect(skill).toMatch(/default child type.*exactly `User Story`/i);
+  expect(skill).not.toMatch(/requested child/i);
+});

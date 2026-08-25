@@ -9,7 +9,8 @@ Use `npx @aonic/plane-skills@latest plane`. Before every command, verify `PLANE_
 
 1. Resolve the parent only from an unambiguous ID. If the request supplies a name or search yields zero or multiple candidates, show the candidates and ask the user to choose; never guess.
 2. Run `plane get <parent-id>`, summarize the selected parent, and verify its type is exactly `User Story`. If it is not, stop.
-3. Run `plane types` and resolve exactly one type for the requested child. If the type is ambiguous or absent, ask the user to resolve it.
-4. Present the complete proposed payload: name, type ID/name, optional description, and `parent: <parent-id>`.
-5. Ask for explicit confirmation immediately before the mutation. On confirmation, invoke exactly one create command and no other mutation: `plane create --name <name> --type-id <type-id> --parent <parent-id> [--description <description>]`.
-6. Report the returned subticket. Do not create another item without a new confirmation.
+3. Derive the child title and optional description from the user's request. Ask for clarification rather than inventing either when it is needed.
+4. The default child type is exactly `User Story`, the only type exposed by the supported `plane types` interface. Run `plane types` to retrieve its unique ID; if it is absent or ambiguous, stop and ask the user to resolve the Plane configuration.
+5. Present the complete proposed payload: name, optional description, `type: User Story (default)` with its ID, and `parent: <parent-id>`.
+6. Ask for explicit confirmation immediately before the mutation. On confirmation, invoke exactly one create command and no other mutation: `plane create --name <name> --type-id <type-id> --parent <parent-id> [--description <description>]`.
+7. Report the returned subticket. Do not create another item without a new confirmation.
