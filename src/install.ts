@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, readdir, rename, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rename, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -57,12 +57,17 @@ async function writePackage(options: InstallOptions, updating: boolean): Promise
   const packageName = options.packageName ?? '@aonic/plane-skills';
   const version = options.version ?? await packageVersion(packageRoot);
   const files = await packagedFiles(join(packageRoot, 'skills'), options.runtime, version);
-  const existing = await readManifest(join(target, manifestName));
+  const existing = await readManifest(join(target, manifestName), packageName, options.runtime);
 
-  if (updating && existing) {
-    const modified = await changedFiles(target, existing.files);
-    if (modified.length > 0 && !options.force) {
-      throw new Error(`Installed files modified since installation: ${modified.join(', ')}`);
+  if (updating) {
+    if (!existing && !options.force && await hasExistingSkillDirectory(target)) {
+      throw new Error('No valid Plane Skills manifest; use install or update --force');
+    }
+    if (existing) {
+      const modified = await changedFiles(target, existing.files);
+      if (modified.length > 0 && !options.force) {
+        throw new Error(`Installed files modified since installation: ${modified.join(', ')}`);
+      }
     }
   }
 
@@ -126,13 +131,37 @@ async function changedFiles(target: string, files: Record<string, string>): Prom
   return changed.sort();
 }
 
-async function readManifest(path: string): Promise<Manifest | undefined> {
+async function readManifest(path: string, packageName: string, runtime: Runtime): Promise<Manifest | undefined> {
   try {
-    return JSON.parse(await readFile(path, 'utf8')) as Manifest;
+    const parsed: unknown = JSON.parse(await readFile(path, 'utf8'));
+    return isManifest(parsed, packageName, runtime) ? parsed : undefined;
   } catch (error: unknown) {
     if (isMissing(error)) return undefined;
+    if (error instanceof SyntaxError) return undefined;
     throw error;
   }
+}
+
+async function hasExistingSkillDirectory(target: string): Promise<boolean> {
+  for (const skill of skillNames) {
+    try {
+      if ((await stat(join(target, skill))).isDirectory()) return true;
+    } catch (error: unknown) {
+      if (!isMissing(error)) throw error;
+    }
+  }
+  return false;
+}
+
+function isManifest(value: unknown, packageName: string, runtime: Runtime): value is Manifest {
+  if (typeof value !== 'object' || value === null) return false;
+  const candidate = value as Partial<Manifest>;
+  return candidate.packageName === packageName
+    && typeof candidate.version === 'string'
+    && candidate.runtime === runtime
+    && typeof candidate.files === 'object'
+    && candidate.files !== null
+    && Object.values(candidate.files).every((hashValue) => typeof hashValue === 'string');
 }
 
 async function replaceManifest(path: string, manifest: Manifest): Promise<void> {

@@ -72,6 +72,19 @@ describe('installer', () => {
     await expect(updatePackage({ ...options, version: '1.2.4' })).rejects.toThrow('modified since installation: plane-create-subticket/SKILL.md');
   });
 
+  test('update without a manifest refuses to overwrite an existing skill without --force', async () => {
+    const source = await packageFixture();
+    const home = await mkdtemp(join(tmpdir(), 'plane-skills-home-'));
+    temporaryDirectories.push(home);
+    const target = join(home, '.codex', 'skills', 'plane-create-subticket');
+    await mkdir(target, { recursive: true });
+    await writeFile(join(target, 'SKILL.md'), 'manually maintained\n');
+    const options = { runtime: 'codex' as const, scope: 'global' as const, cwd: '/repo', home, packageRoot: source, version: '1.2.4' };
+
+    await expect(updatePackage(options)).rejects.toThrow('No valid Plane Skills manifest; use install or update --force');
+    await expect(readFile(join(target, 'SKILL.md'), 'utf8')).resolves.toBe('manually maintained\n');
+  });
+
   test('force update replaces changed packaged files and leaves unrelated files untouched', async () => {
     const source = await packageFixture();
     const home = await mkdtemp(join(tmpdir(), 'plane-skills-home-'));

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { installPackage, type Runtime, type Scope, updatePackage } from './install.js';
 import { redactError, runPlaneCommand } from './plane-cli.js';
@@ -40,6 +41,6 @@ function print(value: unknown): void {
   process.stdout.write(`${JSON.stringify(value)}\n`);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   await main();
 }

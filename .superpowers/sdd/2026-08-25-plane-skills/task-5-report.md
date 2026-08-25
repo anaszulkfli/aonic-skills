@@ -23,3 +23,11 @@ The four skill source directories are intentionally absent until Task 4. The ins
 ## Commit
 
 `feat: install and update skills by runtime`
+
+## Fix round 1
+
+- `update` now refuses to overwrite an existing packaged skill directory when its manifest is missing, malformed, for a different runtime, or for another package; `--force` remains the explicit override.
+- The executable guard resolves both the supplied bin path and module path, allowing npm-style symlinked bins to run.
+- The Plane runner validates exact positional arguments and accepted, non-duplicate `create` options before reading configuration or making a request.
+
+Regression verification: `npm test` passed 25 tests across 5 files; `npm run typecheck`, `npm run build`, and `git diff --check` passed.
