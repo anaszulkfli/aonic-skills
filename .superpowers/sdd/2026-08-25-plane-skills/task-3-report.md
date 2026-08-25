@@ -15,3 +15,18 @@ Verification run:
 - `npm test`
 
 All passed: 15 tests across 3 files.
+
+## Review fix round 1
+
+`searchWorkItems()` now follows `next_cursor` pages using the shared pagination
+loop. Every request retains both the configured `project_id` and original search
+query; repeated cursors remain protected. Added a regression request-contract
+test covering two search pages.
+
+Verification run:
+
+- `npm test -- tests/plane-work-items.test.ts`
+- `npm run typecheck`
+- `npm test`
+
+All passed: 16 tests across 3 files.

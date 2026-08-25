@@ -74,12 +74,7 @@ export class PlaneWorkItems {
 
   async searchWorkItems(query: string): Promise<PlaneWorkItem[]> {
     const parameters = new URLSearchParams({ project_id: this.config.projectId, search: query });
-    const page = await this.client.request<Page<PlaneWorkItem>>(
-      `${this.workspacePath('work-items/search/')}?${parameters.toString()}`,
-      { method: 'GET' },
-      { retryRead: true },
-    );
-    return page.results;
+    return this.listPages<PlaneWorkItem>(this.workspacePath('work-items/search/'), parameters);
   }
 
   async listStates(): Promise<PlaneNamedItem[]> {
@@ -108,9 +103,9 @@ export class PlaneWorkItems {
     return this.listPages<PlaneNamedItem>(this.projectPath('work-item-types/'));
   }
 
-  private async listPages<T>(path: string): Promise<T[]> {
+  private async listPages<T>(path: string, parameters = new URLSearchParams()): Promise<T[]> {
     const results: T[] = [];
-    let nextPath: string | undefined = path;
+    let nextPath: string | undefined = pathWithParameters(path, parameters);
     const seenCursors = new Set<string>();
 
     while (nextPath !== undefined) {
@@ -122,7 +117,8 @@ export class PlaneWorkItems {
         throw new Error('Plane list response repeated a next_cursor');
       }
       seenCursors.add(cursor);
-      nextPath = `${path}?${new URLSearchParams({ cursor }).toString()}`;
+      parameters.set('cursor', cursor);
+      nextPath = pathWithParameters(path, parameters);
     }
 
     return results;
@@ -155,4 +151,9 @@ function escapeHtml(value: string): string {
 
 function summary(item: PlaneNamedItem): string {
   return `${item.identifier ?? item.id} — ${item.name}`;
+}
+
+function pathWithParameters(path: string, parameters: URLSearchParams): string {
+  const query = parameters.toString();
+  return query ? `${path}?${query}` : path;
 }

@@ -67,6 +67,27 @@ describe('PlaneWorkItems', () => {
     );
   });
 
+  test('follows search next_cursor while retaining configured project filtering', async () => {
+    const { api, fetcher } = apiWith(
+      { results: [{ id: 'item-1' }], next_cursor: 'next-search' },
+      { results: [{ id: 'item-2' }], next_cursor: null },
+    );
+
+    await expect(api.searchWorkItems('audit event')).resolves.toEqual([
+      { id: 'item-1' },
+      { id: 'item-2' },
+    ]);
+
+    expect(fetcher).toHaveBeenNthCalledWith(1,
+      'https://api.plane.so/api/v1/workspaces/acme/work-items/search/?project_id=project-1&search=audit+event',
+      expect.objectContaining({ method: 'GET' }),
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(2,
+      'https://api.plane.so/api/v1/workspaces/acme/work-items/search/?project_id=project-1&search=audit+event&cursor=next-search',
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
   test('follows next_cursor for paginated type and state lists', async () => {
     const { api, fetcher } = apiWith(
       { results: [{ id: 'type-1', name: 'Task' }], next_cursor: 'next-type' },
