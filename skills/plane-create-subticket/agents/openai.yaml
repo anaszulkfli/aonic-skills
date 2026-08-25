@@ -1,0 +1,3 @@
+interface:
+  display_name: "Create Plane Subticket"
+  short_description: "Create a confirmed child ticket under a User Story"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Search Plane Tickets"
+  short_description: "Find and inspect Plane tickets without mutations"
