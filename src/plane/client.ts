@@ -50,12 +50,11 @@ export class PlaneClient {
 
   private requestInit(init: RequestInit): RequestInit {
     const headers = new Headers(init.headers);
-    const requestHeaders: Record<string, string> = Object.fromEntries(headers.entries());
-    requestHeaders['X-API-Key'] = this.config.apiKey;
+    headers.set('X-API-Key', this.config.apiKey);
     if (init.body !== undefined && !headers.has('Content-Type')) {
-      requestHeaders['Content-Type'] = 'application/json';
+      headers.set('Content-Type', 'application/json');
     }
-    return { ...init, headers: requestHeaders };
+    return { ...init, headers };
   }
 
   private async readJson<T>(response: Response): Promise<T> {

@@ -52,8 +52,19 @@ describe('PlaneClient', () => {
     await expect(new PlaneClient(config, fetcher).request('/health', { method: 'GET' }, { retryRead: true }))
       .resolves.toEqual({ results: [] });
     expect(fetcher).toHaveBeenCalledWith('https://api.plane.so/health', expect.objectContaining({
-      headers: expect.objectContaining({ 'X-API-Key': 'secret' }),
+      headers: expect.any(Headers),
     }));
+    expect((fetcher.mock.calls[0][1]?.headers as Headers).get('X-API-Key')).toBe('secret');
+  });
+
+  test('replaces a caller-supplied API key regardless of header casing', async () => {
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ results: [] }));
+
+    await new PlaneClient(config, fetcher).request('/health', {
+      headers: { 'x-api-key': 'attacker-value' },
+    });
+
+    expect((fetcher.mock.calls[0][1]?.headers as Headers).get('X-API-Key')).toBe('secret');
   });
 
   test('retries a rate-limited GET at most twice', async () => {
