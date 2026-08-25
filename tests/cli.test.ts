@@ -19,7 +19,7 @@ describe('CLI', () => {
   test('runs when invoked through a symlinked package bin', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'plane-skills-bin-'));
     temporaryDirectories.push(directory);
-    const bin = join(directory, 'plane-skills');
+    const bin = join(directory, 'plane-skills.js');
     await symlink(join(process.cwd(), 'dist', 'cli.js'), bin);
 
     await expect(execFile(process.execPath, [bin, 'invalid-command'])).rejects.toMatchObject({

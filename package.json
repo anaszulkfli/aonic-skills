@@ -15,7 +15,7 @@
     "plane-skills": "./dist/cli.js"
   },
   "scripts": {
-    "test": "vitest run",
+    "test": "npm run build && vitest run",
     "typecheck": "tsc --noEmit",
     "build": "tsc"
   },
