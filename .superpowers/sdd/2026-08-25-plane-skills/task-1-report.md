@@ -20,7 +20,7 @@
 
 ## Commit
 
-Commit: `COMMIT_SHA_PLACEHOLDER`
+Commit: `1db7cd8`
 
 ## Concerns
 
