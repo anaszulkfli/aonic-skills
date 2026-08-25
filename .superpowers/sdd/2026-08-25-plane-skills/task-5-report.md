@@ -31,3 +31,7 @@ The four skill source directories are intentionally absent until Task 4. The ins
 - The Plane runner validates exact positional arguments and accepted, non-duplicate `create` options before reading configuration or making a request.
 
 Regression verification: `npm test` passed 25 tests across 5 files; `npm run typecheck`, `npm run build`, and `git diff --check` passed.
+
+## Task 4 integration fix
+
+`plane create` now treats `--type-id` as optional. When absent, the parser passes no type identifier and the Plane POST body omits `type_id`, allowing Plane to choose its default. When present, it continues to pass `type_id` unchanged. The regression suite exercises the emitted request body directly.

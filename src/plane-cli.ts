@@ -35,7 +35,7 @@ type ParsedCommand =
   | { operation: 'get'; id: string }
   | { operation: 'search'; query: string }
   | { operation: 'types' | 'states' }
-  | { operation: 'create'; payload: { name: string; typeId: string; parent?: string; description?: string } }
+  | { operation: 'create'; payload: { name: string; typeId?: string; parent?: string; description?: string } }
   | { operation: 'set-state'; id: string; stateId: string };
 
 function parsePlaneCommand(operation: string | undefined, args: string[]): ParsedCommand {
@@ -62,7 +62,7 @@ function exactPositionals(operation: string, args: string[], count: number): str
   return args;
 }
 
-function parseCreateArguments(args: string[]): { name: string; typeId: string; parent?: string; description?: string } {
+function parseCreateArguments(args: string[]): { name: string; typeId?: string; parent?: string; description?: string } {
   const values = new Map<string, string>();
   const allowed = new Set(['--name', '--type-id', '--parent', '--description']);
   for (let index = 0; index < args.length; index += 2) {
@@ -73,7 +73,7 @@ function parseCreateArguments(args: string[]): { name: string; typeId: string; p
   }
   return {
     name: required(values.get('--name'), '--name'),
-    typeId: required(values.get('--type-id'), '--type-id'),
+    typeId: values.get('--type-id'),
     parent: values.get('--parent'),
     description: values.get('--description'),
   };

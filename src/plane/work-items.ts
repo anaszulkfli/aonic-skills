@@ -10,7 +10,7 @@ export interface PlaneNamedItem {
 
 export interface CreateWorkItemPayload {
   name: string;
-  typeId: string;
+  typeId?: string;
   parent?: string;
   description?: string;
 }
@@ -63,7 +63,7 @@ export class PlaneWorkItems {
       name: payload.name,
     };
     if (payload.parent !== undefined) body.parent = payload.parent;
-    body.type_id = payload.typeId;
+    if (payload.typeId !== undefined) body.type_id = payload.typeId;
     if (payload.description !== undefined) body.description_html = descriptionHtml(payload.description);
 
     return this.client.request<PlaneWorkItem>(this.projectPath('work-items/'), {
