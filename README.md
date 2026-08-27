@@ -11,13 +11,13 @@ skills cannot be installed into the wrong tool or project:
 
 ```sh
 # Codex, all projects
-npx @aonic/plane-skills@latest install --runtime codex --global
+npx @anaszulkfli/plane-skills@latest install --runtime codex --global
 # Codex, this project
-npx @aonic/plane-skills@latest install --runtime codex --project
+npx @anaszulkfli/plane-skills@latest install --runtime codex --project
 # Claude Code, all projects
-npx @aonic/plane-skills@latest install --runtime claude --global
+npx @anaszulkfli/plane-skills@latest install --runtime claude --global
 # Claude Code, this project
-npx @aonic/plane-skills@latest install --runtime claude --project
+npx @anaszulkfli/plane-skills@latest install --runtime claude --project
 ```
 
 Global Codex skills are installed in `~/.codex/skills`; global Claude Code
@@ -27,8 +27,8 @@ Codex and `.claude/skills` for Claude Code.
 To update an existing installation, use the same runtime and scope:
 
 ```sh
-npx @aonic/plane-skills@latest update --runtime codex --global
-npx @aonic/plane-skills@latest update --runtime claude --project
+npx @anaszulkfli/plane-skills@latest update --runtime codex --global
+npx @anaszulkfli/plane-skills@latest update --runtime claude --project
 ```
 
 Updates preserve unrelated files and refuse to overwrite files changed after

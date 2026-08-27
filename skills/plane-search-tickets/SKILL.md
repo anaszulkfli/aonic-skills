@@ -5,7 +5,7 @@ description: Search and summarize Plane tickets without changing Plane data.
 
 # Search Plane tickets
 
-Use `npx @aonic/plane-skills@latest plane`. Before searching, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use `npx @anaszulkfli/plane-skills@latest plane`. Before searching, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
 
 1. Ask for a search query if none was supplied.
 2. Run exactly `plane search <query>` and present the returned ticket IDs, identifiers, names, types, and states needed to choose a result.

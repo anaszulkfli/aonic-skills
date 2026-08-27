@@ -5,7 +5,7 @@ description: Change a Plane ticket's state after resolving the target and receiv
 
 # Update a Plane ticket status
 
-Use `npx @aonic/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use `npx @anaszulkfli/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
 
 1. Resolve the ticket only from an unambiguous ID. For a name or multiple search results, present candidates and ask the user to choose; never guess. Run `plane get <ticket-id>` and summarize its current state.
 2. Run `plane states`, then resolve the requested state by exact name. If no state or multiple states match, ask the user to choose; never guess.

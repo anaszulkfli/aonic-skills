@@ -54,7 +54,7 @@ export async function updatePackage(options: InstallOptions): Promise<InstallRes
 async function writePackage(options: InstallOptions, updating: boolean): Promise<InstallResult> {
   const target = resolveTarget(options.runtime, options.scope, options.cwd, options.home);
   const packageRoot = options.packageRoot ?? packageRootForModule();
-  const packageName = options.packageName ?? '@aonic/plane-skills';
+  const packageName = options.packageName ?? '@anaszulkfli/plane-skills';
   const version = options.version ?? await packageVersion(packageRoot);
   const files = await packagedFiles(join(packageRoot, 'skills'), options.runtime, version);
   const existing = await readManifest(join(target, manifestName), packageName, options.runtime);
@@ -116,7 +116,7 @@ async function listFiles(directory: string): Promise<string[]> {
 function renderVersion(content: Buffer, version: string): Buffer {
   return Buffer.from(content.toString('utf8')
     .replaceAll('{{PACKAGE_VERSION}}', version)
-    .replaceAll('@aonic/plane-skills@latest', `@aonic/plane-skills@${version}`));
+    .replaceAll('@anaszulkfli/plane-skills@latest', `@anaszulkfli/plane-skills@${version}`));
 }
 
 async function changedFiles(target: string, files: Record<string, string>): Promise<string[]> {

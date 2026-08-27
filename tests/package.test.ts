@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { expect, test } from 'vitest';
 
 test('publishes an executable CLI and quality scripts', () => {
-  expect(pkg.name).toBe('@aonic/plane-skills');
+  expect(pkg.name).toBe('@anaszulkfli/plane-skills');
   expect(pkg.bin).toEqual({ 'plane-skills': './dist/cli.js' });
   expect(pkg.scripts).toMatchObject({ test: 'npm run build && vitest run', typecheck: 'tsc --noEmit' });
 });
@@ -12,13 +12,13 @@ test('documents installation, Plane configuration, safety, and maintainer releas
   const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
 
   for (const command of [
-    'npx @aonic/plane-skills@latest install --runtime codex --global',
-    'npx @aonic/plane-skills@latest install --runtime codex --project',
-    'npx @aonic/plane-skills@latest install --runtime claude --global',
-    'npx @aonic/plane-skills@latest install --runtime claude --project',
+    'npx @anaszulkfli/plane-skills@latest install --runtime codex --global',
+    'npx @anaszulkfli/plane-skills@latest install --runtime codex --project',
+    'npx @anaszulkfli/plane-skills@latest install --runtime claude --global',
+    'npx @anaszulkfli/plane-skills@latest install --runtime claude --project',
   ]) expect(readme).toContain(command);
 
-  expect(readme).toMatch(/npx @aonic\/plane-skills@latest update --runtime (codex|claude) --(global|project)/);
+  expect(readme).toMatch(/npx @anaszulkfli\/plane-skills@latest update --runtime (codex|claude) --(global|project)/);
   for (const variable of ['PLANE_API_KEY', 'PLANE_WORKSPACE_SLUG', 'PLANE_PROJECT_ID', 'PLANE_API_BASE_URL']) {
     expect(readme).toContain(variable);
   }

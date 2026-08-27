@@ -5,7 +5,7 @@ description: Create one Plane work item with the exact User Story type after exp
 
 # Create a Plane User Story
 
-Use `npx @aonic/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use `npx @anaszulkfli/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
 
 1. Collect the User Story name and optional description. Ask rather than invent missing content.
 2. Run `plane types` and require exactly one returned type whose name is exactly `User Story`. If it is absent or duplicates exist, stop and ask the user to resolve the Plane configuration; never substitute a similarly named type.

@@ -12,7 +12,7 @@ async function packageFixture(): Promise<string> {
   temporaryDirectories.push(root);
   for (const skill of ['plane-create-subticket', 'plane-search-tickets', 'plane-create-user-story', 'plane-update-status']) {
     await mkdir(join(root, 'skills', skill, 'agents'), { recursive: true });
-    await writeFile(join(root, 'skills', skill, 'SKILL.md'), `Run npx @aonic/plane-skills@latest plane ${skill}.\n`);
+    await writeFile(join(root, 'skills', skill, 'SKILL.md'), `Run npx @anaszulkfli/plane-skills@latest plane ${skill}.\n`);
     await writeFile(join(root, 'skills', skill, 'agents', 'openai.yaml'), 'interface: openai\n');
   }
   return root;
@@ -44,10 +44,10 @@ describe('installer', () => {
     };
 
     expect(result).toMatchObject({ target: join(home, '.codex', 'skills'), priorVersion: undefined, version: '1.2.3' });
-    expect(manifest).toMatchObject({ packageName: '@aonic/plane-skills', version: '1.2.3', runtime: 'codex' });
+    expect(manifest).toMatchObject({ packageName: '@anaszulkfli/plane-skills', version: '1.2.3', runtime: 'codex' });
     expect(Object.keys(manifest.files)).toHaveLength(8);
     await expect(readFile(join(result.target, 'plane-create-subticket', 'agents', 'openai.yaml'), 'utf8')).resolves.toContain('openai');
-    await expect(readFile(join(result.target, 'plane-create-subticket', 'SKILL.md'), 'utf8')).resolves.toContain('@aonic/plane-skills@1.2.3');
+    await expect(readFile(join(result.target, 'plane-create-subticket', 'SKILL.md'), 'utf8')).resolves.toContain('@anaszulkfli/plane-skills@1.2.3');
   });
 
   test('omits OpenAI metadata for Claude without omitting the skill instructions', async () => {
@@ -97,7 +97,7 @@ describe('installer', () => {
     const updated = await updatePackage({ ...options, version: '1.2.4', force: true });
 
     expect(updated).toMatchObject({ priorVersion: '1.2.3', version: '1.2.4' });
-    await expect(readFile(join(updated.target, 'plane-create-subticket', 'SKILL.md'), 'utf8')).resolves.toContain('@aonic/plane-skills@1.2.4');
+    await expect(readFile(join(updated.target, 'plane-create-subticket', 'SKILL.md'), 'utf8')).resolves.toContain('@anaszulkfli/plane-skills@1.2.4');
     await expect(readFile(join(updated.target, 'unrelated.md'), 'utf8')).resolves.toBe('preserve me\n');
   });
 });
