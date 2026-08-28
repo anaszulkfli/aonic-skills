@@ -8,55 +8,28 @@ function readSkill(skill: string): string {
   return readFileSync(join(skillsRoot, skill, 'SKILL.md'), 'utf8');
 }
 
+const skillNames = ['plane-create-subticket', 'plane-create-user-story', 'plane-search-tickets', 'plane-update-status'];
+
+test.each(skillNames)('%s uses the official MCP and individual OAuth instead of local API-key setup', (skill) => {
+  const instructions = readSkill(skill);
+  expect(instructions).toMatch(/Official Plane MCP/i);
+  expect(instructions).toMatch(/individual Plane OAuth/i);
+  expect(instructions).not.toMatch(/PLANE_API_KEY|PLANE_WORKSPACE_SLUG|PLANE_PROJECT_ID|npx @anaszulkfli/i);
+});
+
+test('search uses MCP to list possible matches and retrieve only a selected work item', () => {
+  const skill = readSkill('plane-search-tickets');
+  expect(skill).toMatch(/search.*work items/i);
+  expect(skill).toMatch(/possible matches/i);
+  expect(skill).toMatch(/selected/i);
+  expect(skill).toMatch(/never changes Plane data/i);
+});
+
 test.each(['plane-create-subticket', 'plane-create-user-story', 'plane-update-status'])(
-  '%s requires confirmation before mutation',
-  (skill) => expect(readSkill(skill)).toMatch(/confirm.*immediately before/i),
+  '%s requires explicit confirmation immediately before its MCP mutation',
+  (skill) => {
+    const instructions = readSkill(skill);
+    expect(instructions).toMatch(/explicit confirmation immediately before/i);
+    expect(instructions).toMatch(/MCP.*(?:create|update|mutation)|(?:create|update|mutation).*MCP/i);
+  },
 );
-
-test('search is read-only', () => expect(readSkill('plane-search-tickets')).toMatch(/never changes Plane data/i));
-
-test('search resolves complete Plane identifiers before retrieving details', () => {
-  const skill = readSkill('plane-search-tickets');
-  expect(skill).toMatch(/complete Plane identifier/i);
-  expect(skill).toMatch(/exactly matches/i);
-  expect(skill).toMatch(/plane get <resolved-uuid>/i);
-});
-
-test('search does not present undocumented type or state fields', () => {
-  const skill = readSkill('plane-search-tickets');
-  expect(skill).toMatch(/only.*fields.*returned/i);
-  expect(skill).not.toMatch(/names, types, and states needed to choose/i);
-});
-
-test('search reports authentication and transient failures without mutating', () => {
-  const skill = readSkill('plane-search-tickets');
-  expect(skill).toMatch(/401.*403/i);
-  expect(skill).toMatch(/429.*500.*502.*503.*504/i);
-});
-
-test('subticket leaves child type to Plane unless the caller supplies a UUID', () => {
-  const skill = readSkill('plane-create-subticket');
-  expect(skill).toMatch(/type: Plane default/i);
-  expect(skill).toMatch(/only if the caller provides a concrete type UUID/i);
-  expect(skill).not.toMatch(/run `plane types`/i);
-});
-
-test('subticket creation follows Plane work-item creation semantics', () => {
-  const skill = readSkill('plane-create-subticket');
-  expect(skill).toMatch(/required `name`/i);
-  expect(skill).toMatch(/`parent`/i);
-  expect(skill).toMatch(/`type_id`/i);
-  expect(skill).toMatch(/description_html/i);
-  expect(skill).toMatch(/HTTP 201/i);
-  expect(skill).toMatch(/401.*403/i);
-  expect(skill).toMatch(/429.*500.*502.*503.*504/i);
-});
-
-test('User Story creation follows Plane work-item creation semantics', () => {
-  const skill = readSkill('plane-create-user-story');
-  expect(skill).toMatch(/required `name`/i);
-  expect(skill).toMatch(/`type_id`/i);
-  expect(skill).toMatch(/description_html/i);
-  expect(skill).toMatch(/HTTP 201/i);
-  expect(skill).toMatch(/run `plane types`/i);
-});

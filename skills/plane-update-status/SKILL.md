@@ -1,26 +1,14 @@
 ---
 name: plane-update-status
-description: Change a Plane ticket's state after resolving the target and receiving explicit confirmation.
+description: Use when changing a resolved Plane work item's state after explicit confirmation.
 ---
 
-# Update a Plane ticket status
+# Update a Plane work item status
 
-Use `npx @anaszulkfli/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use the **Official Plane MCP** with the user's **individual Plane OAuth** login. Do not use a local CLI, REST calls, API keys, or environment-variable configuration.
 
-1. Resolve the ticket within `PLANE_PROJECT_ID`. Accept either a UUID or a complete Plane identifier such as `ENG-123`:
-   - For a UUID, run `plane get <ticket-id>`.
-   - For an identifier, run `plane search <identifier>`. Require exactly one result whose returned `identifier` exactly matches the supplied identifier, then run `plane get <resolved-uuid>`.
-   - For a name, partial identifier, no exact identifier match, or multiple exact matches, present candidates and ask the user to choose; never guess.
-   Summarize the resolved ticket ID, identifier, name, project (when returned), and current state. If the returned project conflicts with `PLANE_PROJECT_ID`, stop without a mutation.
-2. Run `plane states` for the configured project, then resolve the requested state by exact name. If no state or multiple states match, ask the user to choose; never guess. If the ticket is already in the target state, report that no change is needed and do not ask for confirmation or run a PATCH.
-3. Present the transition: ticket UUID/identifier/name, configured project, current state, target state name/ID, and the PATCH payload `{ "state": "<target-state-id>" }`. State that only `state` will be patched.
-4. Ask for explicit confirmation immediately before the mutation. On confirmation, invoke exactly one PATCH operation and no other mutation: `plane set-state <resolved-uuid> <target-state-id>`.
-5. Report the returned ticket and state. Do not make another change without a new confirmation.
-
-## Failure handling
-
-- Missing configuration: name the missing variable(s) without displaying `PLANE_API_KEY`.
-- `401` or `403`: report an authentication or permission failure and ask the user to verify the API key and required Plane scopes.
-- `404`: report that the ticket or state was not found in the configured workspace/project; do not substitute a different target.
-- `400`: report Plane's validation detail and ask the user to correct the request.
-- `429`, `500`, `502`, `503`, or `504`: read-only commands may be retried by the CLI. Do not automatically retry `plane set-state`; instead, run `plane get <resolved-uuid>` to verify the actual state, report it, and require a new explicit confirmation before any further PATCH.
+1. Resolve the target through MCP search and retrieval. For an ambiguous name, partial identifier, or multiple matches, show candidates and ask the user to choose; never guess.
+2. Retrieve the selected item and its current state. Use the MCP's available state information to resolve the requested state exactly. If no unique target state exists, ask the user to choose. If the item is already in that state, report that no change is needed.
+3. Present the transition: selected work item, current state, target state, and the fact that only the state will change.
+4. Ask for **explicit confirmation immediately before** the MCP update mutation. On confirmation, use exactly one Official Plane MCP update operation to change only the approved state. Do not make another mutation without new confirmation.
+5. Report the returned work item and state. If OAuth, permission, validation, or service errors occur, report the error. Do not automatically retry a failed update; retrieve the item to verify its actual state, then require new confirmation before a further update.

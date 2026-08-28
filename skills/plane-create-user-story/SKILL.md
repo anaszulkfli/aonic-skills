@@ -1,14 +1,14 @@
 ---
 name: plane-create-user-story
-description: Use when a user needs one confirmed Plane work item classified as an exact User Story.
+description: Use when a user asks to create a Plane work item classified as an exact User Story.
 ---
 
 # Create a Plane User Story
 
-Use `npx @anaszulkfli/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use the **Official Plane MCP** with the user's **individual Plane OAuth** login. Do not use a local CLI, REST calls, API keys, or environment-variable configuration.
 
-1. Collect the required `name` and optional description. Ask rather than invent missing content or other work-item fields.
-2. Run `plane types` and require exactly one returned type whose name is exactly `User Story`. If it is absent or duplicates exist, stop and ask the user to resolve the Plane configuration; never substitute a similarly named type.
-3. Present the complete API payload: required `name`, `type_id` for the resolved exact `User Story` type, and optional `description_html`. The CLI maps `--type-id` to `type_id` and `--description` to escaped paragraph HTML in `description_html`.
-4. Ask for explicit confirmation immediately before the mutation. On confirmation, invoke exactly one create command and no other mutation: `plane create --name <name> --type-id <user-story-type-id> [--description <description>]`.
-5. A successful create returns HTTP 201. Report the created User Story's identifier, name, and URL when returned. Surface errors without retrying the create; do not create another item without a new confirmation.
+1. Collect the required title and any requested description or other fields. Ask rather than inventing material work-item content.
+2. Use the MCP's read capabilities to resolve the target workspace/project and the exact `User Story` type when Plane exposes types. If the type is missing or ambiguous, ask the user to resolve it; never substitute a similar type.
+3. Present the complete proposed work item, including project, title, type, description, and every field that would be sent.
+4. Ask for **explicit confirmation immediately before** the MCP create mutation. On confirmation, use exactly one Official Plane MCP create operation for the approved payload. Do not make another mutation without new confirmation.
+5. Report the created work item's returned identifier, title, and URL when available. If OAuth, permission, validation, or service errors occur, report the error without retrying the create automatically.

@@ -1,17 +1,15 @@
 ---
 name: plane-create-subticket
-description: Create one Plane subticket under a verified User Story after explicit confirmation.
+description: Use when a user asks to create one Plane subticket under a verified User Story.
 ---
 
 # Create a Plane subticket
 
-Use `npx @anaszulkfli/plane-skills@latest plane`. Before every command, verify `PLANE_API_KEY`, `PLANE_WORKSPACE_SLUG`, and `PLANE_PROJECT_ID` are set; never display the API key.
+Use the **Official Plane MCP** with the user's **individual Plane OAuth** login. Do not use a local CLI, REST calls, API keys, or environment-variable configuration.
 
-1. Resolve the parent only from an unambiguous ID. If the request supplies a name or search yields zero or multiple candidates, show the candidates and ask the user to choose; never guess.
-2. Run `plane get <parent-id>`, summarize the selected parent, and verify its type is exactly `User Story`. If it is not, stop.
-3. Derive the required `name` and optional description from the user's request. Ask for clarification rather than inventing either when it is needed.
-4. Build the API payload with required `name` and `parent: <parent-id>`. The CLI maps `--parent` to Plane's optional `parent` field and `--description` to escaped paragraph HTML in optional `description_html`.
-5. Do not use `plane types` for the child. Use `type: Plane default` and omit `--type-id` entirely. Add `--type-id <type-uuid>` only if the caller provides a concrete type UUID; pass that UUID unchanged, which the CLI maps to the optional `type_id` field. Do not try to resolve a type name.
-6. Present the complete proposed payload: required `name`, optional `description_html`, `parent: <parent-id>`, and either `type: Plane default` or the caller-provided `type_id` UUID.
-7. Ask for explicit confirmation immediately before the mutation. On confirmation, invoke exactly one create command and no other mutation: `plane create --name <name> --parent <parent-id> [--description <description>]`; include `--type-id <type-uuid>` only for the caller-provided UUID case.
-8. A successful create returns HTTP 201. Report the created subticket's identifier, name, and URL when returned. For 401 or 403, report authentication or authorization failure; for 429, 500, 502, 503, or 504, report the failure without retrying the create. Do not create another item without a new confirmation.
+1. Resolve the parent through MCP search and retrieval. If the request is ambiguous, show candidates and ask the user to choose; never guess.
+2. Retrieve the selected parent and verify that it is an exact `User Story`. If it is not, stop and explain why.
+3. Collect the new subticket's required title and optional description. Ask rather than inventing missing material content.
+4. Present the complete proposed item: title, description, parent, project, and any type the user explicitly specified. Leave the child type to Plane unless the user specified one.
+5. Ask for **explicit confirmation immediately before** the MCP create mutation. On confirmation, use exactly one Official Plane MCP create operation with the selected parent. Do not make another mutation without new confirmation.
+6. Report the created subticket's returned identifier, title, and URL when available. If OAuth, permission, validation, or service errors occur, report the error without retrying the create automatically.
